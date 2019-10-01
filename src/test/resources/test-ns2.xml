@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<objects xmlns="http://whatever.com/a" xmlns:b="http://whatever.com/b">
+    <documentInfo>
+        <elementInfo>The Text</elementInfo>
+        <b:elementInfo>The other text</b:elementInfo>
+    </documentInfo>
+</objects>
