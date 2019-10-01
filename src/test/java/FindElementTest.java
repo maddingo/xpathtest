@@ -1,7 +1,10 @@
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Namespace;
 import org.dom4j.XPath;
+import org.dom4j.xpath.DefaultNamespaceContext;
 import org.dom4j.xpath.DefaultXPath;
+import org.jaxen.dom.DOMXPath;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,12 +31,12 @@ public class FindElementTest {
     @Parameterized.Parameters(name = "{index}: {0} {1}")
     public static List<Object[]> data() {
         List<String> xpaths = Arrays.asList(
-                "/objects",
+//                "/objects",
                 "/objects/documentInfo",
-                "/object/documentInfo/elementInfo");
+                "/objects/documentInfo/elementInfo");
 
         List<String> files = Arrays.asList(
-                "/test.xml",
+//                "/test.xml",
                 "/test-ns.xml",
                 "/test-ns2.xml"
         );
@@ -54,7 +57,19 @@ public class FindElementTest {
         String xml = readFile(xmlFile);
         final Document document = DocumentHelper.parseText(xml);
         XPath xpath = new DefaultXPath(xpathString);
-        xpath.setNamespaceURIs(Map.of("", "http://whatever.com/a", "b", "http://whatever.com/b"));
+        xpath.setNamespaceContext(new DefaultNamespaceContext(document.getRootElement()) {
+            @Override
+            public String translateNamespacePrefixToUri(String prefix) {
+                if ((prefix != null)) {
+                    Namespace ns = document.getRootElement().getNamespaceForPrefix(prefix);
+
+                    if (ns != null) {
+                        return ns.getURI();
+                    }
+                }
+
+                return null;            }
+        });
 
         final List<?> nodes = xpath.selectNodes(document, xpath, false);
 
