@@ -31,12 +31,12 @@ public class FindElementTest {
     @Parameterized.Parameters(name = "{index}: {0} {1}")
     public static List<Object[]> data() {
         List<String> xpaths = Arrays.asList(
-//                "/objects",
-                "/objects/documentInfo",
-                "/objects/documentInfo/elementInfo");
+                "/_:objects",
+                "/_:objects/_:documentInfo",
+                "/_:objects/_:documentInfo/_:elementInfo");
 
         List<String> files = Arrays.asList(
-//                "/test.xml",
+                "/test.xml",
                 "/test-ns.xml",
                 "/test-ns2.xml"
         );
@@ -60,12 +60,14 @@ public class FindElementTest {
         xpath.setNamespaceContext(new DefaultNamespaceContext(document.getRootElement()) {
             @Override
             public String translateNamespacePrefixToUri(String prefix) {
-                if ((prefix != null)) {
-                    Namespace ns = document.getRootElement().getNamespaceForPrefix(prefix);
+                if ("_".equals(prefix)) {
+                    Namespace ns = document.getRootElement().getNamespaceForPrefix("");
 
                     if (ns != null) {
                         return ns.getURI();
                     }
+                } else {
+                    return super.translateNamespacePrefixToUri(prefix);
                 }
 
                 return null;            }
